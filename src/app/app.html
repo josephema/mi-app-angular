@@ -1,0 +1,46 @@
+<h1>{{tittle}}</h1>
+<app-saludo [nombre]="'Emma'" [edad]="35" [direccion]="'Antigua'" (enviarNombre)="recibirNombre($event)"> </app-saludo>
+<h1>{{nombre}}</h1>
+<h2>usuarios:</h2>
+<ul>
+
+  <li *ngFor="let u of usuarios">
+
+    {{u}}
+  </li>
+
+
+  <h2>agregar usuario</h2>
+  <form [formGroup]="formulario" (ngSubmit)="guardar()" class="mb-4">
+
+   <div class="mb-3">
+    <input formControlName="nombre" placeholder="Nombre">
+    <div *ngIf="formulario.get('nombre')?.invalid&&formulario.get('nombre')?.touched">
+      nombre invalido
+    </div>
+    </div>
+
+    <div class="mb-3">
+       <input type="number" formControlName="edad" placeholder="edad" >
+        <div *ngIf="formulario.get('edad')?.invalid&&formulario.get('edad')?.touched">
+      edad invalido
+    </div> </div>
+
+
+     <div class="mb-3">
+     <input formControlName="direccion" placeholder="direccion">
+    <div *ngIf="formulario.get('direccion')?.invalid&&formulario.get('direccion')?.touched">
+      direccion invalido
+    </div>
+    </div>
+    <div class="d-flex jusitfy-content-center mt-3">
+    <div *ngIf="mensajeExito" class="alert alert-succes alert-dismissible fade show" style="width: 300px;">
+    TEST  {{mensaje}}
+     <button type="button" class="btn-close" (click)="mensaje=''"></button>
+    </div>
+    </div>
+     <button class="btn btn-success" type="submit">Guardar</button>
+
+  </form>
+ 
+</ul>
