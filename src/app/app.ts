@@ -26,10 +26,16 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from './service/api';
 import { Usuario } from './models/usuario';
+import{map,catchError} from 'rxjs/operators';
+import{of} from 'rxjs';
+import { ProductoService } from './service/producto';
+import { Producto } from './models/producto';
+import {MatTableModule} from '@angular/material/table'
+
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet, Saludo, CommonModule, FormsModule, ReactiveFormsModule,HttpClientModule],
+	imports: [RouterOutlet, Saludo, CommonModule, FormsModule, ReactiveFormsModule,HttpClientModule,MatTableModule],
 	templateUrl: './app.html',
 	styleUrl: './app.css'
 })
@@ -41,8 +47,13 @@ export class App {
 formulario!:FormGroup;
 mensaje:string='';
 mensajeExito:boolean=false;
+loading:boolean=false;
+error:string='';
+
+productos:Producto[]=[];
+displayedColumns:string[]=['nombre','precio','categoria'];
 	constructor(private usuarioService: UsuarioService, private fb:FormBuilder,
-          private apiService:ApiService
+          private apiService:ApiService,private productoService:ProductoService
   ) {
 		this.usuarios = this.usuarioService.obtenerUsuarios();
  this.formulario=this.fb.group({
@@ -85,7 +96,10 @@ direccion:['',[Validators.required]]
    
 	}
 cargarUsuariosApi(){
-      this.apiService.obtenerUsuarios().subscribe(( data: any[] ) => {
+  this.loading=true;
+      this.apiService.obtenerUsuarios().subscribe({
+        
+     next:   ( data: any[] ) => {
     
               for(let i=0; i<data.length; i++)
               {
@@ -97,18 +111,45 @@ cargarUsuariosApi(){
                         direccion: u.address.city
                     };
                     this.usuarioService.agregar(usuarioTemporal);
+                    this.loading=false;
 
               }
-
-      
-
-
-      });
+              },
+      error:(err)=>{ this.mensaje="error algo paso en la api";
+        this.loading=false;
+      }
+    
+          });
 }
+cargarPoductos(){
+this.apiService.obtnerProductos().subscribe({
+next:(data: any[])=>{
+          this.productoService.limpiar();
+                          for(let i=0; i<data.length;i++)
+                          {
+                            const p=data[i];
+                            const ptemporal:Producto={
+                              nombre:p.title	,
+                              precio:p.price	,
+                              categoria:p.category
+                            };
+                            this.productoService.agregar(ptemporal);
 
+                          }
+                          setTimeout(() => {
+                            this.productos=  this.productoService.obtnerProductos();
+                            console.log(this.productos);
+                          });
+                        
+                      }
+
+});
+ 
+}
 
   ngOnInit(){
 
     this.cargarUsuariosApi();
+    this.cargarPoductos();
   }
 }

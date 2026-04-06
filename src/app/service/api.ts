@@ -16,4 +16,9 @@ export class ApiService {
   obtenerUsuarios():Observable<any[]> {
     return this.http.get<any[]>(this.url);
   }
+
+  obtnerProductos(){
+    return this.http.get<any[]>('https://fakestoreapi.com/products');
+
+  }
 }
