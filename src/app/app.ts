@@ -45,13 +45,14 @@ export class App {
 	usuarios: Usuario[] = [];
 	nuevoUsuario: string = '';
 formulario!:FormGroup;
+formularioProducto:FormGroup;
 mensaje:string='';
 mensajeExito:boolean=false;
 loading:boolean=false;
 error:string='';
 
 productos:Producto[]=[];
-displayedColumns:string[]=['nombre','precio','categoria'];
+displayedColumns:string[]=['nombre','precio','categoria','acciones'];
 	constructor(private usuarioService: UsuarioService, private fb:FormBuilder,
           private apiService:ApiService,private productoService:ProductoService
   ) {
@@ -62,6 +63,16 @@ edad:[0,[Validators.required,Validators.min(1),Validators.max(60)]],
 direccion:['',[Validators.required]]
 
   });
+
+  this.formularioProducto=this.fb.group(
+{
+nombre:['',[Validators.required,Validators.minLength(3)]],
+precio:[0,[Validators.required,Validators.min(1),Validators.max(60)]],
+categoria:['',[Validators.required]]
+
+}
+
+  );
 	}
  
 	recibirNombre(n: string) {
@@ -111,9 +122,9 @@ cargarUsuariosApi(){
                         direccion: u.address.city
                     };
                     this.usuarioService.agregar(usuarioTemporal);
-                    this.loading=false;
+                  
 
-              }
+              }  this.loading=false;
               },
       error:(err)=>{ this.mensaje="error algo paso en la api";
         this.loading=false;
@@ -146,6 +157,23 @@ next:(data: any[])=>{
 });
  
 }
+eliminarProducto(producto:Producto):void{this.productoService.eliminar(producto);
+    this.productos=  this.productoService.obtnerProductos();
+}
+guardarProducto(){
+if(this.formularioProducto.invalid) return;
+const nuevo:Producto={
+  nombre:this.formularioProducto.value.nombre,
+ 
+  precio:this.formularioProducto.value.precio,
+ categoria:this.formularioProducto.value.categoria
+};
+this.productoService.agregar(nuevo);
+this.productos=this.productoService.obtnerProductos();
+this.formularioProducto.reset();
+}
+
+
 
   ngOnInit(){
 

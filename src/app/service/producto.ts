@@ -15,4 +15,7 @@ agregar(producto:Producto):void{
 }
 limpiar(): void{this.produtos=[];}
 
+eliminar(producto:Producto):void{
+  this.produtos=this.produtos.filter(p=> p!==producto);
+}
 }

@@ -9,7 +9,7 @@
     {{u.nombre}}
   </li>
 
-
+</ul>
   <table *ngIf="productos.length>0" mat-table [dataSource]="productos" class="mat-elevation-z8">
 
   <ng-container matColumnDef="nombre">
@@ -26,12 +26,31 @@
     <th mat-header-cell *matHeaderCellDef> Categoría </th>
     <td mat-cell *matCellDef="let p"> {{ p.categoria }} </td>
   </ng-container>
-
+<ng-container matColumnDef="acciones">
+  <th mat-header-cell *matHeaderCellDef> Acciones </th>
+  <td mat-cell *matCellDef="let p">
+    <button class="btn btn-danger btn-sm" (click)="eliminarProducto(p)">
+      Eliminar
+    </button>
+  </td>
+</ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
+<table class="table table-borderless">
+<tbody>
+  <tr><td>
   <h2>agregar usuario</h2>
+  </td>
+<td>
+
+ <h2>agregar producto</h2> 
+</td>
+</tr>
+  
+  <tr>
+    <td>
   <form [formGroup]="formulario" (ngSubmit)="guardar()" class="mb-4">
 
    <div class="mb-3">
@@ -63,5 +82,37 @@
      <button class="btn btn-success" type="submit">Guardar</button>
 
   </form>
+</td>
+
+<td>
+
+  <form [formGroup]="formularioProducto" (ngSubmit)="guardarProducto" class="mb-4">
+    <div class="mb-3">
+      <input formControlName="nombre" placeholder="nombre producto">
+       <div *ngIf="formularioProducto.get('nombre')?.invalid&&formularioProducto.get('nombre')?.touched">
+      nombre invalido
+    </div> 
+    </div>
+      <div class="mb-3">
+     <input formControlName="categoria" placeholder="categoria">
+    <div *ngIf="formularioProducto.get('categoria')?.invalid&&formularioProducto.get('categoria')?.touched">
+      direccion categoria
+    </div>
+    </div>
+
+    <div class="mb-3">
+       <input type="number" formControlName="precio" placeholder="precio" >
+        <div *ngIf="formularioProducto.get('precio')?.invalid&&formularioProducto.get('precio')?.touched">
+      edad invalido
+    </div> </div>
+
+      <button class="btn btn-success" type="submit">Guardar</button>
+  </form>
+</td>
+  </tr>
+  </tbody>
+</table>
+
+
+
  
-</ul>
